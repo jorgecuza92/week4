@@ -1,0 +1,256 @@
+Week 4 Day 2
+
+Again, make sure you are using Google Chrome DevTools for debugging. This will become essential as early as next week. Keep them always open alongside your work.
+
+Today we are going to connect JavaScript with HTML.
+
+What if we want to have a button that does something when we click it? HTML and CSS is appearance, JS is what initiates the action.
+
+Let's create a text field with a submit button:
+HTML - 
+
+<input type="text"/>
+<button>Submit</button>
+
+You can add inline JS like we did inline CSS - not recommended for the same reasons! But this will work:
+
+<input type="text"/>
+<button onclick="alert('hello world')">Submit</button>
+
+
+So if we're not doing inline JS, how do we target our specific button with JavaScript? HTML IDs. Remember, an ID should be used only once on a page!
+
+Remember our DOM (Document Object Model) from yesterday - the tree that outlines everything on the page.  Anything on the page can be accessed from JS with the "document" property - there are many, many methods available within it. You can see this in VSCode with the auto-suggestions it provides.  The variants on getElements will be very useful. Note the plural in "elements". Let's start with document.getElementsByTagName - in our app.js file, we now have:
+
+let buttons = document.getElementsByTagName("button")
+console.log(buttons)
+
+document.getElementsByTagName will return an array (though it might have only one element in it)
+
+How to we target just one element? document.getElementById
+
+let btnSubmit = document.getElementById("btnSubmit")
+console.log(btnSubmit)
+
+(Beware - if you type ID instead of Id, it will not work.)
+
+You can write all your JS in the Console section of the DevTools just to test it out; just remember to copy it back to something that persists.
+
+Azam likes to give items the same JS variable name as their HTML ID, but this is not required; you can name them whatever you want and it'll work.
+
+**EVENTS**
+- drag, drop, click, etc.
+
+btnSubmit.addEventListener - this takes two arguments - what action are you listening for, and what do you want to fire when that action occurs (usually a function)?
+
+
+let btnSubmit = document.getElementById("btnSubmit")
+btnSubmit.addEventListener("click", btnSubmitClick)
+console.log(btnSubmit)
+
+now we'll add a btnSubmitClick function:
+function btnSubmitClick() {
+  console.log("Btn Submit has been clicked");
+}
+
+Now...are we ever going to want to call this function outside of having clicked the button? Probably not. So, let's use an anonymous function instead:
+
+let btnSubmit = document.getElementById("btnSubmit")
+btnSubmit.addEventListener("click", function () {
+  console.log("Btn Submit has been clicked");
+})
+
+
+Another common event is mouse-over. If we change "click" above to "mouseover", the function will be called when we simply mouse over the button rather than click it. There are other event options: double-click, right-click, etc.
+
+So what we want to actually do is get the value of whatever was typed in the text box when the user hits Submit. How do we do that?
+
+let btnSubmit = document.getElementById("btnSubmit")
+btnSubmit.addEventListener("click", function () {
+  console.log("Btn Submit has been clicked");
+  console.log(movieNameTextBox.value);
+})
+
+So this works? But it only shows in the console - your users aren't looking there. How can we get it to show in the HTML?
+
+Let's go to our HTML and add:
+ <h1 id="movieNameHeading"></h1>
+
+Then to our JS and add:
+let movieNameHeading = document.getElementById("movieNameHeading")
+
+If we run this, we can see our h1 html appear in the console, but nothing appears in the browser, because we have nothing written between the tags. This is what we want to change with our JavaScript.
+
+In HTML, the content between the opening and closing tags is called "inner HTML".
+
+let's add the following to our function: movieNameHeading.innerHTML = movieNameTextBox.value
+
+btnSubmit.addEventListener("click", function () {
+    console.log(movieNameTextBox.value);
+    movieNameHeading.innerHTML = movieNameTextBox.value;
+  })
+
+
+ACTIVITY 1: Full Name  
+
+Create 2 text boxes, one for first name, one for last name. Once they hit submit, concatenate their first and last name and display it on the screen (not the console!)
+
+One way to do it - 
+
+HTML:
+    <p>First Name:</p>
+    <input type="text" id="firstNameTextBox"/>
+    <p>Last Name:</p>
+    <input type="text" id="lastNameTextBox"/><br><br><br>
+    <button id="btnSubmit">Submit</button>
+    <h1 id="fullNameHeading"></h1>
+
+JS:
+let firstNameTextBox = document.getElementById("firstNameTextBox")
+
+let lastNameTextBox = document.getElementById("lastNameTextBox")
+
+let fullNameHeading = document.getElementById("fullNameHeading")
+
+let btnSubmit = document.getElementById("btnSubmit")
+btnSubmit.addEventListener("click", function () {
+    
+    fullNameHeading.innerHTML = firstNameTextBox.value + " " + lastNameTextBox.value;
+  })
+
+If we are going to do a lot with these values, we can also assign them to variables so we don't have to type all that out repeatedly.
+
+let firstName = firstNameTextBox.value
+let lastName = lastNameTextBox.value
+
+Whenever you use getElementById, your JS starts searching through your entire HTML page from top to bottom to search for the ID (may even continue after finding it, through the rest of the page). This will work against you if your HTML is complex.  This is why it's worthwhile to assign variable names to things rather than writing your code like:
+
+console.log(document.getElementById("movieNameTextBox")
+
+Speaking of console.log...because they are used only for debugging, before you finish and publish your app, make sure you remove all of them. They are only taking up processing time for no reason.
+
+ACTIVITY 2 - RED AND BLUE
+
+One way to do it - 
+
+HTML:
+<button id="redBtnSubmit">Red</button>
+<button id="blueBtnSubmit">Blue</button>
+
+JS:
+let redBtnSubmit = document.getElementById("redBtnSubmit")
+redBtnSubmit.addEventListener("click", function () {
+    document.body.style.backgroundColor = "red";
+  })
+
+let blueBtnSubmit = document.getElementById("blueBtnSubmit")
+  blueBtnSubmit.addEventListener("click", function () {
+    document.body.style.backgroundColor = "blue";
+    })
+
+
+Since there is only one <body> element per HTML page, JS has a built-in document.body property that targets the body without us needing to assign it a class or ID.  This adds the background color as an inline-style.  You can also do this via CSS if you have a CSS file:
+
+.redClass {
+background-color: red;
+}
+
+.blueClass {
+background-color: blue;
+}
+
+(Remember to link your CSS in your HTML page.)
+
+How do we assign a CSS style?
+document.body.className = "blueClass"  (you can select any class name you've previously defined in your CSS)
+
+**DYNAMIC ELEMENT ADDITION**
+
+How do we make our page more dynamic? Say we're creating a to-do list...we don't know ahead of time how many items the user will add.  We need to be able to create an HTML element at the time the user hits submit.  
+
+Let's go back to our first page that displayed a movie name. How can we add these entries to a list?
+Let's create an empty UL element in our HTML and give it an ID. We can then use JS to add <li> elements to the list whenever the user does something.
+
+let liItem = document.createElement("li")  -- this will create an <li> element
+
+Assign the empty <li> some value using innerHTML:
+let liItem = document.createElement("li")
+    liItem.innerHTML = movieName
+
+How do we attach this random <li> to our <ul>?
+moviesUL.appendChild(liItem)  -- like a Python list has .append(), we can append to our <ul>
+
+**ADDING IMAGES DYNAMICALLY**
+
+What if we wanted to add a movie poster to our list in addition to the name of the movie? We'd want to add an image. How do we do that dynamically?
+
+Let's start with adding another textbox to our HTML:
+<input type="text" id="moviePosterTextBox"/>
+
+In our CSS, let's create a .poster class to keep our images at a decent size.
+
+.poster {
+  width: 100px;
+  height: 300px;
+}
+
+Then in our JS, we'll assign that HTML text box and its value to variables (textbox outside the Submit button's function, and value within):
+
+let moviePosterTextBox = document.getElementById("moviePosterTextBox")
+
+btnSubmit.addEventListener("click", function(){
+    let movieName = movieNameTextBox.value
+    let moviePoster = moviePosterTextBox.value
+
+NOW, we are ready to start working with that submitted image URL.
+
+First, we can add an <img> element:
+let imgPoster = document.createElement("img")
+
+But we also need to set the source attribute. We go to the .setAttribute feature for this:
+let imgPoster = document.createElement("img")
+imgPoster.setAttribute("src", moviePoster)
+
+Finally, we'll assign the .poster class to the image so it doesn't show up huge:
+imgPoster.className = "poster
+
+***REMOVE BUTTON***
+
+How do we remove something?
+
+Let's start with creating a remove button:
+
+let removeButton = document.createElement("button")
+removeButton.innerHTML = "Remove"
+removeButton.addEventListener("click", function() {
+ **stuff goes here**
+}
+
+liItem.appendChild(removeButton)
+
+What should be removed? We want to remove the entire <li> - name, image, and button all together.  How do we access the <li>?  What relationship does our remove button have to our <li>?  It's a child of that element because it's included within the <li>.  
+
+So we need to find the parent of the remove button within our JS, using the reserved word "this". The value of "this" changes based on context. When we are within the remove button, "this" refers to that button. But we need to point to the parent - so let's use this.parentElement:
+this.parentElement.removeChild(this) 
+
+removeButton.addEventListener("click", function() {
+  moviesUL.removeChild(this.parentElement)
+
+}
+
+Don't be afraid to console.log(this) to be sure of where you are and what you're targeting. It will give you the current value of "this" depending on where you are.
+
+ASSIGNMENT - To-Do List
+
+Don't get overwhelmed; this is a complicated assignment and you may not be able to get to it all. Break it down into smaller steps.
+
+To start, you will need a label, a text box, and a button.  When the user writes in the box and clicks the button, it should add to the pending list. The list element should have a checkbox, the label, and the remove button. When the checkbox is checked, it should move the element down into a "completed" list. "Remove" should remove the element entirely.
+
+Hint: An <li> can only have one parent at a time. So moving an element to a new list will automatically remove it from the old list.
+
+The styling can all be pure HTML; the JS only needs to control adding to/removing from/moving between lists. Don't worry about creating CSS classes or anything.
+
+Be sure to download today's code - it will help you a lot with today's assignment!
+
+Checkbox per Luke: <input type="checkbox" name="" id="">
+Attach id to it and use it as event listener.

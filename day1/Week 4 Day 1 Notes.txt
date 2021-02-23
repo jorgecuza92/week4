@@ -1,0 +1,334 @@
+Week 4 Day 1
+
+If you missed any of last week, Azam recommends checking out the class recordings. Link is here:
+https://docs.google.com/spreadsheets/d/1yWiLYC6Qr7QRQVXUDlnDFh6RzpNbaQ0lm2D1M6eXksA/edit?usp=sharing
+
+Today starts JavaScript!
+
+All work today will be on the console. Tomorrow we will move to manipulate HTML with it. You can also do all your activities today on JSFiddle (jsfiddle.net) if you want.
+
+JS is one of the most popular programming languages because of how versatile it is. 
+
+The first thing you need to do when using JS, you need to link it. You can do it directly within your HtML if you want; it just needs to be within <script> tags. It can be anywhere; by convention <script> tags are usually just before the end of the body tag, so that loading the script doesn't hold up loading the rest of the page. Also, the reason you have JS is to manipulate the content on your page - if you load it before any of the page content has loaded, it doesn't have any target to run against, and it will give you an error.
+
+Once you refresh your page, any lines you have within the <script> tags will run, kind of like inline CSS. But much like inline CSS, it's better to keep it in a separate file. It's easier to reuse that way, it keeps your HMTL shorter and cleaner, and it keeps your page reload times down.
+
+So how do we link our separate file? Like CSS, create a separate file called whatever.js - then within your HTML you link it, but because it's JS you use a script tag rather than a link tag. So toward the end of your body element, you add:
+<script src="whatever.js"></script>
+
+Remember to include the entire relative path if you keep your script file in a separate folder!
+
+DOM - Document Object Model
+When you create a page, you're essentially creating a tree as you nest more and more elements within it.
+For a relevant image, see:
+https://en.wikipedia.org/wiki/Document_Object_Model#/media/File:DOM-model.svg
+
+How do you know if your JS file that you've linked is loaded? Dev Tools
+Sources tab - should show your JS file
+Console - will show errors if there are any
+Network (select All) - this will show everything that has loaded for the page.
+
+console.log() prints to the console only; it will not show in your page.
+
+**JS Variables**
+There are multiple ways to declare variables, each with their own nuances.
+
+var name = "John"  
+
+This is the original way and can create some issues down the line. For now, don't worry about using it, though you will see it in other people's code.
+
+const pi = 3.1419265
+
+The value you assign to any variable name using const cannot be changed after the initial assignment. So in Python where we could say a = 10, b = 20, a = b and this would change the value of a to 20...you can't do this using const.
+
+So how do we do this? - let
+let name = "John"
+let name = "Mary"
+console.log(name) will print Mary
+
+JS uses camel casing, so we ditch those underscores from Python in favor of capitalizing the start of all words after the first. This is also used in several other languages. If you use snake casing, it'll work, but it's just not JS convention.
+
+You can't run JS in your computer terminal (zsh/bash/etc) without something like Node, which we're not going to worry about for right now. You can use JSFiddle or just refresh your HTML page with the DevTools open.
+
+So how do we do the things we learned in Python using JavaScript?
+
+***LOOPS***
+
+for (let index = 0; index <=10; index++) {
+  console.log(index)
+}
+
+This would be the equivalent of Python's:
+for index in range(0, 11):
+  print(index)
+
+Each of these includes 3 conditions: what is your iterator, how long do you want the loop to run, and how do you increment your iterator. 
+
+index++ is equivalent to index +=1 is equivalent to index = index + 1
+
+So you can see how most languages have a lot of overlap/similarities. Per Azam, each language has unique features which are the hardest part to learn, but otherwise, once you've learned one programming language, picking up a new one is largely the work of a weekend/just a few days.
+
+console.log is the equivalent of print, but it won't display anything anyone can see outside the DevTools
+
+function sayHello() {
+  console.log("Say Hello!")
+}
+
+But in JS unlike in Python, you can call the function in a line of your code *ABOVE* where you've declared the function. How?  Something called **Function Hoisting** - basically when JS sees a function call , it will scan through the rest of the file looking for that function to be able to run it.
+
+Just like in Python, function can take multiple arguments:
+function add(firstNumber, secondNumber) {
+  return firstNumber + secondNumber
+}
+
+let result = add(3,4)
+console.log(result)
+
+This will print 7 on the console.
+
+
+**ARRAYS**
+
+let tasks = []
+
+Push in JS is the equivalent of append in Python.
+
+tasks.push("Wash the car")
+tasks.push("Feed the dog")
+tasks.push("Mow the lawn")
+console.log(tasks)
+
+Deleting from an array (this will both remove and return the very last item in the array - in case you want to do something with the removed item):
+tasks.pop()
+
+But what if you want to delete a specific item?
+delete tasks[1]
+
+This will delete the item at index 1.  (Arrays in JS are also zero-indexed just like Python - this is true of most programming languages.)
+
+You can delete a range of items from within your array using SPLICE:
+tasks.splice(0, 2) 
+
+The first number is your starting index, the second number is how many items you want to remove - so this will remove the items at index 0 and index 1.  You can also use splice to delete just one item if you specify 1 as the second number. If you don't pass splice a second argument, it will remove everything in the array.
+
+ACTIVITY 1 - Loop Through An Array
+
+How do we loop through an array using its length like we did in Python? The JS equivalent of len(list) is list.length.
+
+for (let index=0; index < friends.length; index++) {
+  console.log(friends[index]
+}
+
+Why less than and not <=? Zero-indexing. Friends is 4 items long, but friends[4] doesn't exist.
+
+
+**WHILE LOOPS**
+
+Will run until the initial condition set becomes False.
+
+let counter = 0
+
+while(counter <=10) {
+do something
+}
+
+This will run 10 times unless you throw a break in there somewhere.
+while(counter <=10) {
+  if(counter % 2 == 0) {
+    break
+  }
+}
+
+**CONDITIONS**
+Largely works the same as in Python; but "elif" in Python has to be spelled out as "else if" for JS.
+
+Parentheses are needed on the if statment (unlike Python) or it won't work.
+
+if counter % 2 == 0 {
+do something
+}
+
+^^This won't run.
+
+The curly braces are needed to wrap your statements as well. Python used indentation for this. We still indent for ease of reading code, but for JS to know what we're trying to do, we need the braces {}.
+
+OPERATORS
+and: &&
+or: ||  (pipe character is shift-backslash)
+
+
+ACTIVITY - isVowel function
+
+function isVowel(letter) {
+  if(letter == "a" || letter == "e" || letter == "i" || letter == "o" || letter == "u") {
+    return true
+  }
+  return false
+}
+
+console.log(isVowel("a")) -- this will print true
+console.log(isVowel("b")) -- this will print false
+console.log(isVowel("A")) -- this also prints false right now - how can we include it? 
+before we compare, we should convert our input into the case we're comparing against.
+
+JS has both toUpperCase and toLowerCase methods.
+
+So...
+
+function isVowel(letter) {
+  letter = letter.toLowerCase()
+  if(letter == "a" || letter == "e" || letter == "i" || letter == "o" || letter == "u") {
+    return true
+  }
+  return false
+}
+
+
+CLASSES
+
+Behind the scenes in JS, there is no such thing as a class - they're all just functions; the apparent classes are just syntactic sugar.
+
+When defining a class, use a capital letter just like in Python.
+
+To create a class, you start with a function:
+
+function Car(make, model) {
+  this.make = make
+  this.model = model
+}
+
+"this" is similar to "self" when we create classes in Python.
+
+How do we instantiate a new object of this class?
+
+let car = new Car("Honda", "Accord")
+
+In the DevTools, you can see the properties of your class as you create it.
+
+
+We can add properties on the fly. However...a new instance of that object won't have that property.
+
+car.isElectric = false
+
+let car2 = new Car("Toyota", "Camry") -- this car will not have the isElectric property. We can see this in the DevTools if we look at both of them.
+
+Let's say we create a function for the class:
+
+function drive() _
+  console.log("Car is driving.")
+}
+
+How can we tell JS that a function (like drive) should be called on objects of the Car class?
+
+Car.prototype.foo = drive
+
+No parentheses are needed above because we're just pointing the foo property to the drive function; we're not calling the function.
+
+"Foo" can be whatever name we want - it creates a property in the car class that calls the assigned function.
+
+car.foo() -- this will call the drive function
+
+Car.prototype.drive = drive is also perfectly fine to do, and will probably make more sense when you're trying to keep things straight.
+
+Let's create a braking function:
+
+function brake() {
+  console.log("Car is braking...")
+}
+
+Car.prototype.brake = brake
+
+Now we can call it using car.brake().
+
+Right now, we can accidentally just call drive() and brake() without calling them in relation to a specific car. We don't really want to do that. How do we limit it?
+
+When we first create our function, we create it as an "Anonymous Function" - that is, a function that doesn't have a name. Right out of the gate, we assign it to an object property.
+
+Car.prototype.drive = function() {
+  console.log("Car is driving")
+}
+
+We should use an anonymous function if we know it should only be used in relation to a specific object class.
+
+Anonymous functions are everywhere in JavaScript!
+
+So what about a function that requires arguments?
+Car.prototype.changeGear = function(gearNum) {
+  console.log("Gear changed to " + gearNum)
+}
+
+Question from Shawn: Is there something similar to f-strings for Python in JS? Per Azam, we will get into that later, but they're called "Template Literals".
+
+You can create an empty object in JS.
+
+let emptyObject = {}
+
+You can dynamically add properties if you want to. emptyObject.firstName = "John", etc. You should probably create class-wide properties instead, rather than object-specific properties, but JS will let you.
+
+You can also dynamically add functions to a specific object.  Again, not recommended, but you can do it. It can get confusing quickly, though, because the tendency is to assume when you see a property/function called on an object, that it will be available for other objects in that class.
+
+The prototype method is the "old" way, but helpful for understanding the process.
+
+The modern way (ES6/2015-2016)
+
+class ElectricCar {
+  constructor(make, model, range)  //this is similar to Python's __init__
+    this.make = make
+    this.model = model
+    this.range = range
+    this.vin = ""
+    this.speed = 0
+}
+
+what about functions?  Just create them inside the class brackets; no "self/this" bits needed.
+
+class ElectricCar {
+  constructor(make, model, range) { //this is similar to Python's __init__
+    this.make = make
+    this.model = model
+    this.range = range
+    this.vin = ""
+    this.speed = 0
+  }
+
+  drive() {
+    console.log("drive")
+    this.speed += 10
+  }
+}
+
+let electricCar = new ElectricCar("Tesla", "Model X", 200)
+
+electricCar.drive()
+
+
+ASSIGNMENT FOR TODAY:
+
+Do these look familiar? We have done most of these exercises in Python already. Today we are going to to them in JavaScript to get used to JS syntax.
+
+
+TOMORROW: We will learn how JS interacts with HTML.
+
+
+***3PM CST SESSION - DEBUGGING JAVASCRIPT***
+
+Many different ways to debug your code:
+1) can use VSCode but Azam never has
+2) DevTools - debugging is one of the most important topics in all 16 weeks, yet most students just ignore it.  Don't spend >5 minutes trying to debug with console.log statements - if you're still stuck - pull up DevTools and go to Sources. Go to your JS folder and select the file that you want to debug. It will show the code in that file. If you want the program to stop at a certain point so you can check out the values, click on a line number and it will add a breakpoint. You can see this on the right-hand column as well; it will show you all the selected breakpoints. Then refresh the page; it will run until it hits the first breakpoint.  Up on the browser window, it will show "Paused in debugger". Under Scope on the right-hand side, it will show all the variables in the current scope.
+
+If you choose multiple breakpoints, you can select the play button to jump to the next one, or the "step over" button next to the play button to go directly to the next line in the code. 
+
+STEP INTO - go into a function you called to look at different elements.
+
+SHOW CONSOLE DRAWER - 3-icon in upper right corner will give you this option.
+
+Debugging will be your lifeline.
+*******
+
+Array with Duplicates exercise:
+This has multiple possible approaches:
+- remove duplicates from original list
+
+- create new list with no duplicates
+
+- probable answer will involve a loop inside of a loop
