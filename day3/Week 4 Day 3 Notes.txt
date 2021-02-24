@@ -1,0 +1,319 @@
+Week 4 Day 3 Notes
+
+Overview for to-do list assignment:
+No real questions from the group on the base assignment.
+
+1) Summer was curious about how to clear the initial text entry box after the list item is added.
+You have to take the last variable assigned in your JS to the text box value and assign it to an empty string.  So our first variable assignment is something like:
+let taskTextBox = document.getElementById("taskTextBox")
+
+then
+let taskName = taskTextBox.value
+
+so then at the bottom of your btn.AddEventListener function, add:
+taskName = ""
+
+
+2) What about adding a placeholder? (Grayed-out suggested entry or "Enter task", something like that, which will appear in the textbox.) 
+
+This is done in the HTML for the text box, just add placeholder="whatever" in your initial opening <input> tag.
+
+
+3) Question from Neil - What about having tasks add by hitting Enter/Return rather than clicking the button?
+
+If you put all of the HTML inside a form, the behavior is a bit different. When you hit Enter, it automatically submits the form BUT...it also refreshes the page. This will be a problem for our list because it doesn't persist on refresh. So we need to stop that bit.
+
+Surround your inputs with a <form> element in your HTML and give it an id="taskForm".
+
+let taskForm = document.getElementById("taskForm")
+
+taskForm.addEventListener("submit", function(e) {
+  e.preventDefault()
+})
+
+The "e" here is the function built into the form submit.
+
+
+***TEMPLATE LITERALS***
+
+These allow string interpolation and allow you to create HTML elements as a string.
+
+
+Let's start with a text box that displays an entered name as an <h1> element. The way we already know how to do it would be: 
+
+HTML:
+<input type="text" id="nameTextBox"/>
+<button id="btnSubmit">Add Task</button>
+<h1 id="nameHeading"></h1>
+
+JS:
+const nameTextBox = document.getElementById("nameTextBox")
+const btnSubmit = document.getElementById("btnSubmit")
+const nameHeading = document.getElementById("nameHeading")
+
+btnSubmit.addEventListener("click", function() {
+    const name = nameTextBox.value 
+    nameHeading.innerHTML = "Hello, " + name
+})
+
+Instead, we can use template literals to do it:
+btnSubmit.addEventListener("click", function() {
+    const name = nameTextBox.value 
+    nameHeading.innerHTML = `Hello! Good morning, ${name}`
+})
+
+The quotes for the entire string should be changed to backticks (`) - the key for them is the same as the tilde key. Then wherever you want to insert a variable, you start with a dollar sign and surround it with curly braces, like so: ${variableHere}.
+
+You can see where this will be helpful if you are trying to display multiple variable values at once (just like string interpolation in Python.
+
+Template literals are used a lot in React.
+
+ACTIVITY 3 - Use template literals to do the first/last name display exercise from Tuesday.
+
+For in-class activities, you can put your JS directly in the HTML with a script tag, only because they're smaller. For your assignments, don't do this - please use a separate file.
+
+***USE TEMPLATE LITERALS TO BUILD HTML ELEMENTS***
+
+So let's revisit our to-do list. Let's say we want to add priority to our tasks, and we want the task in bold and the priority in italics.
+
+Add a priority field to our HTML:
+
+Then in our JS, add:
+
+
+let taskPriorityTextBox = document.getElementById("taskPriority");
+
+Now we'll revamp our button:
+
+btnAdd.addEventListener("click", function() {
+  const taskName = taskTextBox.value
+  const taskPriority = taskPriorityTextBox.value
+
+  const liItem = `<li>
+                      <b>${taskName}</b>
+                      <i>${taskPriority}</i>
+                  </li>`
+
+We can print this to to console to see how it looks.
+
+Now, how can we add this to our <ul> element? We can't use .appendChild() because that method only works on nodes, and our template literal is a string.
+
+What if we use .innerHTML?  That seems to work at first, but each new entry overrides the last.
+
+We could use += instead of just =:
+
+pendingUL.innerHTML += liItem
+
+However, if you have a lot of items in your list, 50/60/500 items, creating a new long string just to add one item can become expensive in terms of memory.
+
+New function to the rescue!  .insertAdjacentHTML()
+This takes 2 arguments: where you want to insert and what you want to insert. The where is limited to 4 arguments that will pop up in your VSCode as you try to write it.
+
+pendingUL.insertAdjacentHTML('beforeend', liItem)
+
+This has greatly shortened our code already.
+
+What about adding the remove button?
+
+Template literals require us to use inline styling:
+    const liItem = `<li>
+                        <b>${taskName}</b>
+                        <i>${taskPriority}</i>
+                        <button onlick="removeTask()"Remove</button>
+                    </li>`
+
+So now we have to create a separate removeTask function:
+function removeTask(element) {
+  if(element.parentElement.parentElement == pendingUL) {
+    pendingUL.removeChild(element.parentElement)
+  }
+  else {
+    completedUL.removeChild(element.parentElement)
+    }
+}
+
+***LOOPS***
+
+If you have a list, how can you iterate through it to create your interface? If you have a list of customers, how can you display it? Assume each customer is dictionary (aka OBJECT in JavaScript parlance) of first name, last name and age values, and these are all in a list.
+
+HTML:
+<ul> id="customersUL"</ul>
+
+JS:
+const customers = [
+  {firstName: "John", lastName: "Doe", age: 34},
+  {firstName: "Mary", lastName: "Doe", age: 35}
+]
+
+for (let index = 0; index < customers.length; index++) {
+  let customer = customer[index]
+  console.log(customer)
+}
+
+This will print a series of objects.
+
+Activity: Speakers - iterate through the array to display the name and subject matter for each speaker.
+
+
+***Iterating Through A Multi-Layered Object***
+
+Huge array of multi-layered user objects is assigned to a variable "users" and is saved as users.js.
+
+If users.js is linked and loaded first, you can access whatever is in that file in your subsequent JS
+code. You can go into your separate JS file and just write console.log(users) and it will print everything.  So, the order in which you list linked files matters!
+
+HTML:
+<ul id="usersUL"></ul>
+
+JS: 
+const usersUL = document.getElementById("usersUL")
+
+for (let index = 0; index < users.length; index++) {
+    let user = user[index]
+
+We know we can access top-level properties pretty easily, e.g., user.name. But what if we want to print all the streets, which are another level down?  user.address.street
+
+So now we can do this:
+
+for (let index = 0; index < users.length; index++) {
+    let user = user[index]
+    
+    let userItem = `
+                        <li>
+                            <b>${user.name}</b>
+                            <i>${user.email}</i>
+                            <h3>Address</h3>
+                            <p>${user.address.street}<br>
+                               ${user.address.city}</p>
+                            <h6>Geo</h6>
+                            <p>${user.address.geo.lat}<br>
+                               ${user.address.geo.lng}</p>
+                        </li>
+                        `
+    usersUL.insertAdjacentHTML('beforeend', userItem)
+}
+
+This multi-nested dictionary structure is JSON. Next week, Azam will just be pointing us to URLs.
+
+We are applying inline styles to individual items here, but any styling you want to apply to the entire <li> should be in a separate CSS file.
+
+ACTIVITY - LOOP AND DISPLAY MESSAGE BOARD POSTS
+
+Download posts.js file, then link, loop through, and display it as we did above. Make sure to link your custom JS file second so that you have access to the first!
+
+
+***ARRAY HELPERS***
+
+ONLY work on arrays, will help you to do things more quickly. Several of these are also available in other programming languages.
+
+To multiply every element in an array of numbers by 2, right now we'd have to do this:
+
+const numbers = [1, 2, 3, 4, 5]
+let doubled = []
+
+for(let index= 0; index <numbers.length, index++) {
+    let number = numbers[index]
+    doubled.push(number*2)
+}
+
+We had to create a new array and run a loop to do this. What if we could use an array helper instead?
+
+1) MAP 
+(aka "transformation function")
+
+Helps to transform an array into something else. Available in other programming languages.
+
+Allows you to iterate through the array and gives you a brand new array by default.
+
+Takes a function as an argument (any function that itself takes one argument). Must return something for each iteration to be the elements of the new array
+
+numbers.map(function(num) {
+  return "A"
+}
+
+This will give us the array [A, A, A, A, A].
+
+You don't have to assign this to a variable, but it's a good idea since you'll likely want to be doing something later using that returned array.
+
+numbers.map(function(num) {
+  return num * 2
+}
+
+This will give us the same result as our for loop above.
+
+
+Can we apply this to our users.js example above?
+
+users.map(function(user) {
+ return `<li>
+              <b>${user.name}</b>
+              <i>${user.email}</i>
+              <h3>Address</h3>
+              <p>${user.address.street}<br>
+                 ${user.address.city}</p>
+              <h6>Geo</h6>
+              <p>${user.address.geo.lat}<br>
+                 ${user.address.geo.lng}</p>
+              </li>`
+})
+
+This will give us an array of template literals.  How would we use this to completely replace our for loop that appends items to our userUL list?
+
+let userItems = users.map(function(user) {
+  return `<li>
+             <b>${user.name}</b>
+             <i>${user.email}</i>
+             <h3>Address</h3>
+             <p>${user.address.street}<br>
+                ${user.address.city}</p>
+             <h6>Geo</h6>
+             <p>${user.address.geo.lat}<br>
+                ${user.address.geo.lng}</p>
+             </li>`
+})
+
+usersUL.innerHTML = userItems
+
+
+2) FILTER
+
+let someNumbers = [3, 4, 5, -6, 7, 1, -4, 6, -2]
+
+How do we get only positive numbers?  Filter can only return true or false, so we need to adjust our conditions so that only positive numbers get added to the array.
+
+let positiveNumbers = someNumbers.filter(function(num) {
+	return num > 0
+})
+
+console.log(positiveNumbers) gives us [3, 4, 5, 7, 1, 6]
+
+
+Another example (related to our assignment) - dishes in a restaurant
+
+const dishes = [
+  {name: "Spaghetti", course: "Entree"},
+  {name: "Sorbet", course: "Dessert"},
+  {name: "Chicken Alfredo", course: "Entree"},
+  {name: "Tiramisu", course: "Dessert"}
+]
+
+let entrees = dishes.filter(function(dish) {
+  return dish.course == "Entree"
+})
+
+console.log(entrees) gives us ["Spaghetti", "Chicken Alfredo"]
+
+
+Many other array helpers are available - Azam shared an article that outlines several (https://medium.com/@voonminghann/array-helper-methods-in-es6-412dbc3f845b)
+forEach, find, reduce, etc.
+
+
+Shawn asked about the arrow functions seen in the article - we will be covering those later this week.
+
+ASSIGNMENT - RESTAURANT MENU
+
+Make a mobile-responsive restaurant menu page that can be filtered by entrees, desserts, etc.  Be sure to load the dishes.js file before your custom JS file!
+
+Start by trying to display items on the screen, then move on to how to change the display to only showing certain categories of dish (maybe a drop-down or a series of buttons).
+
+Get the functionality in place first, then move to making it work on mobile, making it nicely styled, etc.

@@ -1,0 +1,34 @@
+<html>
+    <head></head>
+    <body>
+
+        <input type="text" id="nameTextBox" />
+        <input type="text" id="ageTextBox" />
+
+        <button id="btnSubmit">Submit</button>
+
+        <h1 id="nameHeading"></h1>
+
+    </body>
+
+    <script>
+
+        const nameTextBox = document.getElementById("nameTextBox")
+        const ageTextBox = document.getElementById("ageTextBox")
+        
+        const btnSubmit = document.getElementById("btnSubmit")
+        const nameHeading = document.getElementById("nameHeading")
+
+        btnSubmit.addEventListener("click", function() {
+
+            const name = nameTextBox.value 
+            const age = ageTextBox.value 
+
+            nameHeading.innerHTML = `Hello, Good Morning ${name} and my age is ${age}`
+
+        })
+
+
+    </script>
+
+</html>

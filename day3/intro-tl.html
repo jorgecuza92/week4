@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <input type="text" id="nameTextBox" />
+  <input type="text" id="ageTextBox" />
+  <button id="btnSubmit">Submit</button>
+
+  <h1 id="nameHeading"></h1>
+
+  <script>
+
+    const nameTextBox = document.getElementById("nameTextBox")
+    const ageTextBox = document.getElementById("ageTextBox")
+
+    const btnSubmit = document.getElementById("btnSubmit")
+    const nameHeading = document.getElementById("nameHeading")
+
+
+    btnSubmit.addEventListener("click", function() {
+
+      const name = nameTextBox.value
+      const age = ageTextBox.value
+
+      // nameHeading.innerHTML = "Hello, " + name
+      nameHeading.innerHTML = `Hello, good morning ${name}, my age is ${age}` // Template literal (f-string in python)
+    })
+  </script>
+
+
+</body>
+</html>

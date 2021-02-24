@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+  <h1>Customers</h1>
+  <ul id="customersUL"></ul>
+
+  <script>
+
+    const customersUL = document.getElementById("customersUL")
+
+    const customers = [
+      {firstName: "John", lastName: "Doe", age: 34},
+      {firstName: "Mary", lastName: "Doe", age: 24},
+      {firstName: "Alex", lastName: "Doe", age: 54}
+    ]
+
+    for(let index = 0; index < customers.length; index++) {
+      
+      let customer = customers[index]
+      
+      let customerItem = `
+        <li>
+          <b>${customer.firstName}, ${customer.lastName}</b>
+          <h3>${customer.age}</h3>
+        </li>
+      
+      `
+      customersUL.insertAdjacentHTML('beforeend', customerItem)
+      
+  
+    }
+  </script>
+</body>
+</html>

@@ -1,41 +1,46 @@
 
-// setting my variables
 let enterTaskTextBox = document.getElementById("enterTaskTextBox")
 let btnAddTask = document.getElementById("btnAddTask")
 
 let pendingUL = document.getElementById("pendingUL")
-// let pendingCheckBox = document.getElementById("pendingCheckBox")
-
 let completedUL = document.getElementById("completedUL")
-// let completedCheckBox = document.getElementById("completedCheckBox")
 
-//submit 'click' functions() //
 btnAddTask.addEventListener("click", function() {
 
-  let pendingTask = enterTaskTextBox.value 
+  let taskName = enterTaskTextBox.value 
+  //clears textbox after adding task
+  enterTaskTextBox.value = ""
 
-  // create HTMLelement li and checkbox
   let liItem = document.createElement("li")
-  let pendingCheckBox = document.createElement("input") 
-  pendingCheckBox.setAttribute("type", "checkbox")
-  liItem.innerHTML = pendingTask
-  // console.log(pendingTask)
-  
-  // add Li/checkbox to Ul // 
-  liItem.appendChild(pendingCheckBox)
-  pendingUL.appendChild(liItem)
-  
 
-  // create remove button //
-  let removeButton = document.createElement("button")
-  removeButton.innerHTML = "Remove"
-  removeButton.addEventListener("click", function() {
-    
-    // from pendingUL remove LI item
-    pendingUL.removeChild(this.ParentElement)
-
+  let taskCheckBox = document.createElement("input")
+  taskCheckBox.setAttribute("type", "checkbox")
+  taskCheckBox.addEventListener("change", function() {
+    if(this.checked) {
+      console.log(this.parentElement)
+      completedUL.appendChild(this.parentElement)
+    } else {
+      pendingUL.appendChild(this.parentElement)
+    }
   })
 
+  // create task label and set it to textbox value
+  let taskLabel = document.createElement("label")
+  taskLabel.innerHTML = taskName
+
+  let removeButton = document.createElement("button")
+  removeButton.innerHTML = "remove"
+  removeButton.setAttribute("id", "remove")
+  removeButton.addEventListener("click", function() {
+    local = (this.parentElement).parentElement
+    local.removeChild(this.parentElement)
+  })
+  // append taskCheckBox, taskLabel, removeButton,  to liItem
+  liItem.appendChild(taskCheckBox)
+  liItem.appendChild(taskLabel)
+  liItem.appendChild(removeButton)
+
+  pendingUL.appendChild(liItem)
 
 
 })
