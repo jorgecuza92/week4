@@ -1,0 +1,386 @@
+Week 4 Day 4 Notes
+
+Overview for Restaurant Menu assignment - VSCode LiveShare
+
+We can use a map function to go through our dishes.js file and return an array of whatever we want
+
+const dishItems = dishes.map(function(dish) {
+  return`<li>
+	</li>
+	`
+}
+
+This will give us an array of empty list items. How do we include the name of each dish?
+
+const dishItems = dishes.map(function(dish) {
+  return`<li>${dishes.title}
+	</li>
+	`
+}
+
+dishesUL.innerHTML = dishItems.join("")
+
+We might want to include the dish name within an element like <label> so we can style it later, so:
+  return`<li>
+	  <label>${dishes.title}</label>
+	  <p>${dish.description}</p>
+	</li>
+	`
+
+Question from Katherine - what was up with all the weird characters in Creme Brulee? 
+We don't have the French characters enabled to show the accents right so (even in the initial .js file), it saved wrong/weird. 
+
+Question from Summer - How do we target the HTML we build in JS from our CSS to style it? 
+Once the page loads, it has built all your HTML, and if your CSS has, for example, styling applied to the <label> element, or if you have added a class within your template literal and then wrote CSS for it, it will show correctly.
+
+Now - how do we filter by just starters, entrees, desserts? You can use buttons, a drop-down list, etc. - the particular styling doesn't matter. We'll use a drop-down list for this review.
+
+HTML:
+
+<body>
+Select a course:
+  <select id="courseSelect">
+    <option value="All">All</option>
+    <option value="Starters">Starters</option>
+    <option value="Entrees">Entrees</option>
+    <option value="Desserts">Desserts</option>
+  </select>
+
+The "value" property of each option is the important part - the bit between the tags is just what will display to the user. The "value" is what we will target in our JS.
+
+We'll start by getting our drop-down to print our selection to the console to make sure that functionality is working right.
+
+courseSelect.addEventListener("change", function() {
+  console.log(this.value)
+})
+
+How can we then use this.value to filter all the dishes?  
+courseSelect.addEventListener("change", function() {
+  const selectedCourse = this.value
+
+  if (selectedCourse == "Starters") {
+    const starters = dishes.filter(function (dish) {
+      return dish.course == "Starters"
+    })
+
+  // let's console.log to make sure we're getting all of the starters
+  console.log(starters)
+
+  //now we have to clear all the elements from dishesUL
+  dishesUL.innerHMTL = ""
+
+  //now let's display the starters using the same map function we created before, just targeted to starters
+  const dishItems = starters.map(function(dish) {
+    return `<li>
+ 	        <label>${dish.title}</label>
+		etc.
+	   `
+
+  }
+})
+
+But there's a lot of code being copied/pasted/slightly altered here, right? Especially when we get entrees and desserts into the mix.
+
+What if we could create a function into which we could pass an array, and do our filtering outside that function?
+
+function displayDishes(dishesToDisplay) {
+  const dishItems = dishesToDisplay(function(dish) {
+    return `<li>
+ 	        <label>${dish.title}</label>
+		<p>${dish.description}</p>
+		etc.
+	   `
+	})
+  dishesUL.innerHTML = dishItems.join("")
+
+displayDishes(dishes) will show all the dishes.  Now above with our starters function, we can get rid of all the code related specifically to display, and after we run our map function to get the starters array, just call displayDishes(starters).
+
+Can we reduce this code even further? We have different checks for selected courses in our if statments. What if we did this?...
+
+constfilteredDishes = dishes.filter(function(dish) {
+  return dish.course == selectedCourse
+})
+
+displayDishes(filteredDishes)
+
+This should work for every option, but it won't work to show ALL just yet, because there's no dish.course property of "All". So let's add
+
+if (selectedCourse == "All") {
+  displayDishes(dishes)
+} 
+else {
+  constfilteredDishes = dishes.filter(function(dish) {
+    return dish.course == selectedCourse
+})
+
+displayDishes(filteredDishes)
+
+This may not be the solution you get when you're first building out the program; but once you've copy/pasted several times, you know when you get the chance to refactor, this is a place to target to make the code nicer/easier to read and still function the same way.
+
+For inspiration on nice-looking displays, you can visit dribbble.com (yes, 3 b's). Some of the designs are more complicated and may inspire you to level up your CSS skills.
+
+
+**VARIABLE DISTINCTIONS**
+const - cannot be changed once initially declared
+let  - preferable to var, but why? 
+var - always effectivly globally scoped...this can cause big problems
+
+function doSomething() {
+  var counter = 10
+  for (let index=0; index<-10; index++) {
+    var counter = 20
+  }
+  console.log(counter)
+}
+
+This should print 10, right? Because console.log is being called outside of the for loop.
+BUT...it prints 20! With var, JavaScript "hoists" variable declarations up to whatever the current scope is from when they were last declared.
+
+This is why let was created. It will properly keep track of scoping.
+
+
+**ARROW FUNCTIONS**
+In ES6 (2015/2016), a JS update was added to make anonymous functions shorter to write.
+Rather than:
+const btnSubmit = document.getElementById("btnSubmit")
+btnSubmit.addEventListener("click", function() {
+stuff here
+})
+
+We can do
+btnSubmit.addEventListener("click", () => {
+stuff here
+})
+
+These are meant to be entirely equivalent.
+
+The one difference is that the scoping with "this" gets a bit odd. Doing console.log(this) in the top function will show you the button.  But console.log(this) in the arrow function shows you the window object instead because for some reason they inherit their "this" from the parent scope instead of binding their own.  So...if you're doing something in your arrow function that uses "this", you probably want to convert it to a regular anonymous function.
+
+**EVENT OBJECTS**
+
+If you pass an argument (any argument) to the anonymous function on addEventListener, it will be assigned the event object. Usually the variable chosen to do this is "e", but it can be anything you want.  This is done when you want to know more information about the event that occurred - you can console.log that variable and then investigate the various properties of the event object.
+
+**CALLBACKS**
+
+Sometimes you want a function to wait before executing parts of its code. For example, if you are creating a timer.
+
+window.setInterval takes two arguments: the function that you want to fire, and the second (in milliseconds) is how often you want it to fire
+
+window.setInterval(incrementCounter, 1000)  -- we aren't calling the function here, just pointing to it.  1000 ms = 1 second
+
+function incrementCounter() {
+console.log('increment Counter')
+}
+
+This will print 'increment Counter' once a second indefinitely.
+
+
+window.setTimeOut takes the same arguments - a function and a time interval - but setTimeOut is only fired once, not repeatedly.
+
+Based on your needs, you can use one or the other.
+
+But we probably don't want people to be able to randomly call incrementCounter() without using setInterval? Make it an anonymous function.
+
+window.setInterval(function() {
+  console.log(increment Counter)
+}, 1000)
+
+Our internal function here is known as a "callback function", because it will be called after a designated amount of time.
+
+How do we stop it if/when we want to?
+
+let counter = 0
+
+window.setInterval(function() {
+  counter++
+  console.log(counter)
+}, 1000)
+
+This will return your incremented counter value. So you can assign that to a variable and use it when  you want to stop it.
+
+let counter = 0
+
+let intervalId = window.setInterval(function() {
+  counter++
+  if counter == 10) {
+// stop the interval
+  window.clearInterval(intervalId)
+  }
+}, 1000)
+
+What if I want to display the interval? Add some display element to your HTML (say, a heading) and give it an ID, then target that with .innerHTML.
+
+const intervalHeading = document.getElementById("intervalHeading")
+
+let counter = 0
+
+let intervalId = window.setInterval(function() {
+  counter++
+  intervalHeading.innerHTML = `${counter}`
+  if (counter == 10) {
+// stop the interval
+  window.clearInterval(intervalId)
+  }
+}, 1000)
+
+
+You can use setInterval to call any function that doesn't take an argument.
+
+ACTIVITY - TIMER
+
+HTML:
+
+<h1>Countdown Timer</h1>
+<input type="text" id="timerTextBox" placeholder="Time in seconds:" />
+<button id="btnTimer">Start Timer</button>
+<h1 id="intervalHeading"></h1>  (you can use any sort of display element you wish; doesn't have to be a heading)
+
+JS: 
+const timerTextBox = document.getElementById("timerTextBox");
+const btnTimer = document.getElementById("btnTimer");
+const intervalHeading = document.getElementById("intervalHeading");
+
+btnTimer.addEventListener("click", () => {
+// we can start with arrow functions and revert to normal anonymous functions if we need to do so
+
+    let counter = timerTextBox.value
+   // we use let here instead of const because we will be changing the value as the timer counts down
+
+    let intervalId = window.setInterval(function() {
+        counter--
+        intervalHeading.innerHTML = `${counter}`
+	
+	//this below will stop the timer
+        if (counter == 0) {
+            window.clearInterval(intervalId)
+        }
+
+    }, 1000)
+})
+
+We can make a version of this that's an automatic countdown from a default value that starts right when the page loads by wrapping all the code that's in the button into a named function and changing the counter value to a set number, like 10. Then assign your function call to a value, and place that value in your heading.
+
+function startTimer() {
+  let counter = 10
+  let intervalId = window.setInterval(function() {
+    counter--
+    timerHeading.innerHTML = `${counter}`
+    if (counter == 0) {
+      window.clearInterval(intervalId)
+    }
+  }, 1000)
+  return counter
+}
+
+let value = startTimer()
+timerHeading.innerHTML = value
+
+This takes a bit to start counting down. Why is that? The function looks first to the last line, the return value...only after a bit does it start actually counting down, and it doesn't display correctly.
+
+So we shouldn't use this method for anything that displays to the user. It's fine for anything behind the scenes - sending an e-mail, adding to a list, etc.
+
+How can we get around this delay?
+Anything where the middle of the code takes a while to execute you'll run into this program - maybe even just one second.  So this is where callbacks come to the rescue.
+
+We can create a separate function to hold our delay and then pass it to our startTimer function. Let's try it just with printing at first.
+
+function updateUI() {
+  console.log("Update UI")
+}
+
+function startTimer(onCounterUpdated) {
+  console.log(onCounterUpdated)
+  onCounterUpdated()
+
+
+  let counter = 10
+  let intervalId = window.setInterval(function() {
+    counter--
+    intervalHeading.innerHTML = `${counter}`
+    if (counter == 0) {
+      window.clearInterval(intervalId)
+    }
+  }, 1000)
+  return counter
+}
+
+startTimer(updateUI)
+
+If you run this in the browser, you can see in the console that onCounterUpdated refers continually to the updateUI function.  This is a confusing concept, but it's everywhere in JavaScript. Give yourself time to get comfortable with it, don't worry if you don't get it right away, but keep working to get comfortable with it.
+
+At what point in the code above do you think we actually get the updated counter? The line after counter--, right? So let's call onCounterUpdated at that point.
+
+
+function startTimer(onCounterUpdated) {
+  let counter = 10
+  let intervalId = window.setInterval(function() {
+    counter--
+    onCounterUpdated() 
+    if (counter == 0) {
+      window.clearInterval(intervalId)
+    }
+  }, 1000)
+  return counter
+}
+
+function updateUI() {
+  console.log("Update UI")
+}
+
+startTimer(updateUI)
+
+This now prints "Update UI" every second. Let's change our updateUI function to console.log the value of the counter...now we're getting numbers. So let's set it to adjust the HTML instead.
+
+function updateUI() {
+  timerHeading.innerHTML = counter
+}
+
+
+We can also do this with an anonymous function instead of creating a separate updateUI function:
+startTimer(function(ctr) {
+  timerHeading.innerHTML = ctr
+})
+
+
+Question from Younus - why are we trying to make this a separate function when it works fine as part of the button click?
+Reusability/customizability. By separating the timer and the UI updating into separate functions, we can use both in separate places where we only need the functionality of one or the other. We can also change parts of one without affecting the functionality of the other.
+
+Callback functions like this are seen in many different programming languages.
+
+Another example (includes a bit we haven't learned yet and will cover tomorrow):
+
+function getMovies() {
+  fetch stuff from website (stuff we'll learn tomorrow)
+  yadayada.json
+  blahblah result (step that takes a while)
+  return result
+})
+
+getMovies() -- this takes a bit of time to get the data, even on the fastest network in the world.
+
+if we try console.log(getMovies()) before it's done, we'll get an empty list, because the rest of the JS code continues to run even though we didn't get the data back yet. So we have to wait on it.  Callbacks are how we do it.
+
+Let's change a few things:
+function getMovies(onMoviesLoaded) {
+  fetch stuff from website (stuff we'll learn tomorrow)
+  yadayada.json
+  blahblah result
+  let movies = result
+  onMoviesLoaded()
+
+getMovies(function () {
+  console.log(movies)
+}
+  
+})
+
+ACTIVITY - STOCK QUOTES
+
+Treat the posted code like the dishes.js from yesterday - don't change anything within the code itself. Save it as a stockQuotes.js file and import it, then refer to "quotes" as your data variable.
+
+
+ASSIGNMENT - NEWS WEBSITE
+
+Similar to the resaturant exercise from yesterday. Save and load the file like we did with dishes.js yesterday.
+
+Next week is all about callbacks. Using the debugger to add breakpoints and slow things down can help a lot with figuring out callbacks!

@@ -1,0 +1,19 @@
+
+div#newsContent {
+  text-align: left;
+  max-width: 40%;
+  align-content: center;
+  /* position: absolute; */
+  line-height: 1
+}
+img#images {
+  display:flex;
+  justify-content: right;
+  max-height: 300px;
+  max-width: 300px;
+  
+}
+
+div#content {
+  align-content: center;
+}
